@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:miniproject_f1pulse/models/news_model.dart';
+import 'package:share_plus/share_plus.dart';
 
 class NewsPage extends StatelessWidget {
   const NewsPage({
@@ -10,6 +12,7 @@ class NewsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final News news = ModalRoute.of(context)!.settings.arguments as News;
     double screenHeight = MediaQuery.of(context).size.height;
+    String formattedDate = DateFormat('dd MMMM yyyy').format(news.publishedAt!);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -40,19 +43,26 @@ class NewsPage extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Padding(
-                          padding: const EdgeInsetsDirectional.only(
-                            top: 40,
-                            start: 10,
-                          ),
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },
-                            icon: const Icon(
-                              Icons.chevron_left,
-                              size: 40,
-                              color: Colors.white,
-                            ),
+                          padding: const EdgeInsets.only(
+                              top: 40, left: 10, right: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IconButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  icon: const Icon(
+                                    Icons.arrow_back_ios,
+                                    color: Colors.white,
+                                  )),
+                              IconButton(
+                                  onPressed: () {},
+                                  icon: const Icon(
+                                    Icons.share,
+                                    color: Colors.white,
+                                  ))
+                            ],
                           ),
                         ),
                         Padding(
@@ -81,6 +91,35 @@ class NewsPage extends StatelessWidget {
                     ),
                   ),
                 ],
+              ),
+            ),
+            Padding(
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    formattedDate,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Text(news.source!.name!,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold,
+                      ))
+                ],
+              ),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Divider(
+                thickness: 0.5,
+                color: Colors.black,
               ),
             ),
             Padding(

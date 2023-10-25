@@ -5,8 +5,7 @@ class Race {
   final String season;
   final String round;
   final String raceName;
-  final String date;
-  final String time;
+  final DateTime dateTime;
   final String circuitName;
   final String locality;
   final String country;
@@ -17,8 +16,7 @@ class Race {
     required this.season,
     required this.round,
     required this.raceName,
-    required this.date,
-    required this.time,
+    required this.dateTime,
     required this.circuitName,
     required this.locality,
     required this.country,
@@ -32,12 +30,13 @@ class Race {
         'assets/images/circuits/${circuit['circuitId']}.jpg';
     final countryImagePath =
         'assets/images/circuits_countries/${circuit['Location']['country']}.png';
+    final dateTimeString = '${json['date']}T${json['time']}';
+    final dateTime = DateTime.parse(dateTimeString);
     return Race(
       season: json['season'],
       round: json['round'],
       raceName: json['raceName'],
-      date: json['date'],
-      time: json['time'],
+      dateTime: dateTime,
       circuitName: circuit['circuitName'],
       locality: circuit['Location']['locality'],
       country: circuit['Location']['country'],

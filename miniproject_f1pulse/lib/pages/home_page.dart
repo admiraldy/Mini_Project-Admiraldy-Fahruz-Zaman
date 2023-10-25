@@ -46,10 +46,9 @@ class HomeTab extends StatelessWidget {
                               padding: const EdgeInsets.only(
                                   bottom: 10, left: 8, right: 8),
                               child: Card(
-                                  elevation: 0,
                                   shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(10)),
-                                  color: Colors.black,
+                                  color: Colors.white,
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -69,11 +68,22 @@ class HomeTab extends StatelessWidget {
                                         child: Text(
                                           news[index].title!,
                                           style: const TextStyle(
-                                            color: Colors.white,
+                                            color: Colors.black,
                                             fontSize: 14,
                                           ),
                                         ),
                                       ),
+                                      Padding(
+                                        padding:
+                                            const EdgeInsets.only(bottom: 8),
+                                        child: Center(
+                                          child: IconButton(
+                                            onPressed: () {},
+                                            icon: const Icon(Icons.share),
+                                            color: Colors.black,
+                                          ),
+                                        ),
+                                      )
                                     ],
                                   )),
                             ),

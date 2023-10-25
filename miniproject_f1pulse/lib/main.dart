@@ -17,7 +17,7 @@ class F1PulseApp extends StatelessWidget {
       routes: {
         '/': (context) => const MainPage(),
         '/raceDetails': (context) => const RaceDetails(),
-        '/newsDetails': (context) => NewsPage(),
+        '/newsDetails': (context) => const NewsPage(),
       },
       debugShowCheckedModeBanner: false,
     );
