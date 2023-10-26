@@ -18,7 +18,7 @@ class News {
   String? content;
   String? url;
   String? image;
-  DateTime? publishedAt;
+  String? publishedAt;
   Source? source;
 
   News({
@@ -38,8 +38,7 @@ class News {
       content: json['content'] as String,
       url: json['url'] as String,
       image: json['image'] as String,
-      publishedAt:
-          DateTime.parse(json['publishedAt']), // parse string to DateTime
+      publishedAt: json['publishedAt'] as String,
       source: Source.fromJson(json['source']),
     );
   }
