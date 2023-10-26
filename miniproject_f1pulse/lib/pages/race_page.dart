@@ -22,7 +22,7 @@ class RacingTab extends StatelessWidget {
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
-                    child: Column(
+                    child: const Column(
                       children: [],
                     ),
                   ),

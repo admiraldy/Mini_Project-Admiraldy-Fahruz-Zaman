@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:miniproject_f1pulse/models/news_model.dart';
-import 'package:share_plus/share_plus.dart';
 
 class NewsPage extends StatelessWidget {
   const NewsPage({
