@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:miniproject_f1pulse/pages/main_page.dart';
 import 'package:miniproject_f1pulse/pages/news_page.dart';
-import 'package:miniproject_f1pulse/pages/race_detail_page.dart';
+import 'package:miniproject_f1pulse/pages/upcoming_race_detail_page.dart';
 
 void main() {
   runApp(const F1PulseApp());
@@ -16,7 +16,7 @@ class F1PulseApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const MainPage(),
-        '/raceDetails': (context) => const RaceDetails(),
+        '/upcomingRaceDetails': (context) => const UpcomingRaceDetails(),
         '/newsDetails': (context) => NewsPage(),
       },
       debugShowCheckedModeBanner: false,

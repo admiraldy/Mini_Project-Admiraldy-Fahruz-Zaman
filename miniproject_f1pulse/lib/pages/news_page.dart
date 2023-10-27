@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:miniproject_f1pulse/models/news_model.dart';
 
 class NewsPage extends StatelessWidget {
@@ -10,6 +11,7 @@ class NewsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final News news = ModalRoute.of(context)!.settings.arguments as News;
     double screenHeight = MediaQuery.of(context).size.height;
+    String formattedDate = DateFormat('dd MMMM yyyy').format(news.publishedAt!);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -82,6 +84,32 @@ class NewsPage extends StatelessWidget {
                   ),
                 ],
               ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    formattedDate,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                    ),
+                  ),
+                  Text(
+                    news.source!.name!,
+                    style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.black,
+                        fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+            ),
+            const Divider(
+              thickness: 0.5,
+              color: Colors.black,
             ),
             Padding(
               padding: const EdgeInsets.all(16.0),

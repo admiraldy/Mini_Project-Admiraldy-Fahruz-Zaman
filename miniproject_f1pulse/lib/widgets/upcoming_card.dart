@@ -1,90 +1,75 @@
 import 'package:flutter/material.dart';
-import 'package:miniproject_f1pulse/pages/race_detail_page.dart';
-import 'package:miniproject_f1pulse/settings/page_routes_settings.dart';
 import 'package:miniproject_f1pulse/widgets/countdown_card.dart';
 
 class UpcomingRaceCard extends StatelessWidget {
+  final String date;
+  final String raceName;
+  final String circuitName;
+  final DateTime raceTime;
+
   const UpcomingRaceCard({
     super.key,
+    required this.date,
+    required this.raceName,
+    required this.circuitName,
+    required this.raceTime,
   });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(CustomPageRoute(
-            builder: (context) => const RaceDetails(),
-            settings: const RouteSettings(name: '/raceDetails')));
-      },
-      child: Stack(
-        children: [
-          const Image(
-            image: AssetImage('assets/images/card.png'),
-            height: 200,
-            width: double.infinity,
-            fit: BoxFit.cover,
-          ),
-          Container(
-            color: Colors.black.withOpacity(0.5),
-            child: const Padding(
-              padding: EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Next race: ',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      Text(
-                        '23-26 May 2021',
-                        style: TextStyle(
-                          color: Colors.white,
+    return Stack(
+      children: [
+        const Image(
+          image: AssetImage('assets/images/card.png'),
+          height: 200,
+          width: double.infinity,
+          fit: BoxFit.cover,
+        ),
+        Container(
+          color: Colors.black.withOpacity(0.5),
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  date,
+                  style: const TextStyle(
+                    color: Colors.white,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          raceName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Mexico',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        Text(
+                          circuitName,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 12,
                           ),
-                          Text(
-                            'FORMULA 1 GRAN PREMIO DE MÉXICO 2023',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Icon(
-                        Icons.chevron_right,
-                        color: Colors.white,
-                        size: 45,
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 10),
-                  CountdownCard(),
-                ],
-              ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+                CountdownCard(raceTime: raceTime),
+              ],
             ),
-          )
-        ],
-      ),
+          ),
+        )
+      ],
     );
   }
 }

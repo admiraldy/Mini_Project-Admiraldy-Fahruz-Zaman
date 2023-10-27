@@ -1,26 +1,27 @@
 import 'package:flutter/material.dart';
 
 class CountdownCard extends StatefulWidget {
-  const CountdownCard({super.key});
+  final DateTime raceTime;
+  CountdownCard({super.key, required this.raceTime});
 
   @override
   State<CountdownCard> createState() => _CountdownCardState();
 }
 
 class _CountdownCardState extends State<CountdownCard> {
-  late DateTime raceTime;
+  late DateTime racesTime;
   late Duration remainingTime;
 
   @override
   void initState() {
     super.initState();
-    raceTime = DateTime(2023, 10, 28, 23, 59, 59);
+    racesTime = widget.raceTime;
     updateRemainingTime();
   }
 
   void updateRemainingTime() {
     final currentTime = DateTime.now();
-    remainingTime = raceTime.difference(currentTime);
+    remainingTime = racesTime.difference(currentTime);
     if (remainingTime.isNegative) {
       remainingTime = Duration.zero;
     }

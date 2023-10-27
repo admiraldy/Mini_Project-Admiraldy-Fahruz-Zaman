@@ -10,6 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   http: ^1.1.0
+  intl: ^0.18.1
   sliding_clipped_nav_bar: ^3.1.0+4
 
 dev_dependencies:
@@ -22,6 +23,8 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/circuits_countries/
+    - assets/fonts/
 
   fonts:
     - family: Formula1
