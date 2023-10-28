@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:miniproject_f1pulse/main.dart';
 import 'package:miniproject_f1pulse/pages/home_page.dart';
 import 'package:miniproject_f1pulse/pages/race_page.dart';
+import 'package:miniproject_f1pulse/pages/standing_page.dart';
 import 'package:sliding_clipped_nav_bar/sliding_clipped_nav_bar.dart';
 
 class MainPage extends StatefulWidget {

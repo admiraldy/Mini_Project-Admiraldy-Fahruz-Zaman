@@ -122,7 +122,7 @@ class _RacingTabState extends State<RacingTab> {
                     itemBuilder: (context, index) {
                       return GestureDetector(
                         onTap: () {
-                          Navigator.pushNamed(context, '/raceDetails',
+                          Navigator.pushNamed(context, '/pastRaceDetails',
                               arguments: pastRaces[index]);
                         },
                         child: Padding(

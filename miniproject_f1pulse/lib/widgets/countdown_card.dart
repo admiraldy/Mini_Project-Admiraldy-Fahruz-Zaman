@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CountdownCard extends StatefulWidget {
   final DateTime raceTime;
-  CountdownCard({super.key, required this.raceTime});
+  const CountdownCard({super.key, required this.raceTime});
 
   @override
   State<CountdownCard> createState() => _CountdownCardState();
@@ -36,7 +36,7 @@ class _CountdownCardState extends State<CountdownCard> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            const Text('GRAND PRIX WEEKEND'),
+            const Text('RACE STARTS IN'),
             const SizedBox(
               height: 10,
             ),

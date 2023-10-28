@@ -33,11 +33,20 @@ class HomeTab extends StatelessWidget {
                         orElse: () => races.last);
                     String raceDate =
                         DateFormat('dd MMMM yyyy').format(nearestRace.date);
-                    return UpcomingRaceCard(
-                      date: raceDate,
-                      raceName: nearestRace.raceName,
-                      circuitName: nearestRace.circuitName,
-                      raceTime: nearestRace.time,
+                    return GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          '/upcomingRaceDetails',
+                          arguments: nearestRace,
+                        );
+                      },
+                      child: UpcomingRaceCard(
+                        date: raceDate,
+                        raceName: nearestRace.raceName,
+                        circuitName: nearestRace.circuitName,
+                        raceTime: nearestRace.time,
+                      ),
                     );
                   } else if (snapshot.hasError) {
                     return const Text('Error');

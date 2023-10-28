@@ -24,6 +24,8 @@ flutter:
   assets:
     - assets/images/
     - assets/images/circuits_countries/
+    - assets/images/circuits/
+    - assets/images/drivers/
     - assets/fonts/
 
   fonts:
