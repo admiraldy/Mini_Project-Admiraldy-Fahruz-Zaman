@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniproject_f1pulse/models/race_models.dart';
 import 'package:miniproject_f1pulse/widgets/race_info.dart';
 
 class PastRaceDetails extends StatelessWidget {
@@ -6,6 +7,8 @@ class PastRaceDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Race race = ModalRoute.of(context)!.settings.arguments as Race;
+    final List<Result> result = race.results ?? [];
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -17,10 +20,22 @@ class PastRaceDetails extends StatelessWidget {
             ],
           ),
         ),
-        body: const TabBarView(
+        body: TabBarView(
           children: [
             // Display race information
-            RaceDetailsInfo(),
+            const RaceDetailsInfo(),
+            //Display the race results
+            ListView.builder(
+              itemCount: result.length,
+              itemBuilder: (context, index) {
+                final results = result[index];
+                return ListTile(
+                  title: Text(results.driverName),
+                  subtitle: Text(results.constructorName),
+                  leading: Text(results.position.toString()),
+                );
+              },
+            )
           ],
         ),
       ),
