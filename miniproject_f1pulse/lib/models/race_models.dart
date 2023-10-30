@@ -1,5 +1,6 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:miniproject_f1pulse/models/result_model.dart';
 
 class Race {
   final String season;
@@ -17,7 +18,7 @@ class Race {
   final DateTime? thirdPractice;
   final DateTime? qualifying;
   final DateTime? sprint;
-  final List<Result>? results;
+  final List<Result> results;
 
   Race({
     required this.season,
@@ -35,7 +36,7 @@ class Race {
     this.thirdPractice,
     this.qualifying,
     this.sprint,
-    this.results,
+    required this.results,
   });
 
   factory Race.fromJson(Map<String, dynamic> json) {
@@ -65,9 +66,6 @@ class Race {
     final sprint = json['Sprint'] != null
         ? DateTime.parse(json['Sprint']['date'] + ' ' + json['Sprint']['time'])
         : null;
-    final resultsJson = json['Results'] as List<dynamic>?;
-    final results =
-        resultsJson?.map((result) => Result.fromJson(result)).toList();
     return Race(
       season: json['season'],
       round: json['round'],
@@ -84,80 +82,58 @@ class Race {
       thirdPractice: thirdPractice,
       qualifying: qualifying,
       sprint: sprint,
-      results: results,
+      results: [],
     );
   }
-}
-
-class Result {
-  final String number;
-  final String position;
-  final String positionText;
-  final String points;
-  final String driverCode;
-  final String driverName;
-  final String constructorName;
-  final String grid;
-  final String laps;
-  final String status;
-
-  Result({
-    required this.number,
-    required this.position,
-    required this.positionText,
-    required this.points,
-    required this.driverCode,
-    required this.driverName,
-    required this.constructorName,
-    required this.grid,
-    required this.laps,
-    required this.status,
-  });
-
-  factory Result.fromJson(Map<String, dynamic> json) {
-    return Result(
-      number: json['number'],
-      position: json['position'],
-      positionText: json['positionText'],
-      points: json['points'],
-      driverCode: json['Driver']['code'],
-      driverName:
-          json['Driver']['givenName'] + ' ' + json['Driver']['familyName'],
-      constructorName: json['Constructor']['name'],
-      grid: json['grid'],
-      laps: json['laps'],
-      status: json['status'],
-    );
+  void addResult(Map<String, dynamic> resultData) {
+    final resultsList = resultData['Results'] as List;
+    final resultObjects =
+        resultsList.map((result) => Result.fromJson(result)).toList();
+    results.addAll(resultObjects);
   }
 }
 
 class RaceAPI {
   final endPointUrl = "https://ergast.com/api/f1/current.json";
-  final resultsEndPointUrl = "https://ergast.com/api/f1/current/results.json";
+  final resultsEndPointUrl =
+      "https://ergast.com/api/f1/current/results.json?limit=500";
 
-  Future<List<Race>> getRace() async {
+  Future<List<Race>> getRaceData() async {
     final response = await http.get(Uri.parse(endPointUrl));
+    final resultsResponse = await http.get(Uri.parse(resultsEndPointUrl));
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 && resultsResponse.statusCode == 200) {
       Map<String, dynamic> data = jsonDecode(response.body);
       List<dynamic> races = data['MRData']['RaceTable']['Races'];
 
-      return races.map((race) => Race.fromJson(race)).toList();
+      Map<String, Map<String, dynamic>> raceResults =
+          fetchRaceResults(resultsResponse);
+
+      List<Race> raceList = races.map((race) {
+        final raceModel = Race.fromJson(race);
+        final resultData = raceResults[raceModel.raceName];
+        if (resultData != null) {
+          raceModel.addResult(resultData);
+        }
+        return raceModel;
+      }).toList();
+
+      return raceList;
     } else {
-      throw Exception('Failed to fetch races');
+      throw Exception('Failed to fetch data');
     }
   }
 
-  Future<List<Result>> getResults() async {
-    final response = await http.get(Uri.parse(resultsEndPointUrl));
+  Map<String, Map<String, dynamic>> fetchRaceResults(http.Response response) {
+    Map<String, dynamic> resultsData = jsonDecode(response.body);
+    List<dynamic> raceResults = resultsData['MRData']['RaceTable']['Races'];
 
-    if (response.statusCode == 200) {
-      Map<String, dynamic> data = jsonDecode(response.body);
-      List<dynamic> results = data['MRData']['RaceTable']['Races']['Results'];
-
-      return results.map((result) => Result.fromJson(result)).toList();
-    } else {
-      throw Exception('Failed to fetch results');
+    Map<String, Map<String, dynamic>> raceResultsMap = {};
+    for (var result in raceResults) {
+      final raceName = result['raceName'];
+      raceResultsMap[raceName] = result;
     }
+
+    return raceResultsMap;
   }
 }

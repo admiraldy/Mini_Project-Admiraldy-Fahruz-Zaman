@@ -1,45 +1,31 @@
-class Source {
-  String? name;
-  String? url;
+class NewsModel {
+  final String title;
+  final String description;
+  final String url;
+  final String urlToImage;
+  final DateTime publishedAt;
+  final String content;
+  final String source;
 
-  Source({this.url, this.name});
-
-  factory Source.fromJson(Map<String, dynamic> json) {
-    return Source(
-      name: json['name'],
-      url: json['url'],
-    );
-  }
-}
-
-class News {
-  String? title;
-  String? description;
-  String? content;
-  String? url;
-  String? image;
-  DateTime? publishedAt;
-  Source? source;
-
-  News({
-    this.title,
-    this.description,
-    this.content,
-    this.url,
-    this.image,
-    this.publishedAt,
-    this.source,
+  NewsModel({
+    required this.title,
+    required this.description,
+    required this.url,
+    required this.urlToImage,
+    required this.publishedAt,
+    required this.content,
+    required this.source,
   });
 
-  factory News.fromJson(Map<String, dynamic> json) {
-    return News(
-      title: json['title'] as String,
-      description: json['description'] as String,
-      content: json['content'] as String,
-      url: json['url'] as String,
-      image: json['image'] as String,
+  factory NewsModel.fromJson(Map<String, dynamic> json) {
+    return NewsModel(
+      title: json['title'],
+      description: json['description'],
+      url: json['url'],
+      urlToImage: json['urlToImage'],
       publishedAt: DateTime.parse(json['publishedAt']),
-      source: Source.fromJson(json['source']),
+      content: json['content'],
+      source: json['source']['name'],
     );
   }
 }

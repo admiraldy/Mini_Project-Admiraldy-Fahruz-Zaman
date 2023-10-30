@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:miniproject_f1pulse/models/constructor_standing_models.dart';
 import 'package:miniproject_f1pulse/models/driver_standing_models.dart';
+import 'package:miniproject_f1pulse/theme/textstyle_theme.dart';
 
 class StandingTab extends StatelessWidget {
   const StandingTab({Key? key}) : super(key: key);
@@ -11,6 +12,11 @@ class StandingTab extends StatelessWidget {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
+            backgroundColor: Colors.red,
+            title: Text(
+              'Standings',
+              style: TextAppStyle().headerStye(),
+            ),
             bottom: const TabBar(
               tabs: [
                 Tab(text: 'Driver'),
@@ -30,16 +36,26 @@ class StandingTab extends StatelessWidget {
                       return ListView.builder(
                         itemCount: driverStandings.length,
                         itemBuilder: (context, index) {
-                          return Standingstable(
-                              position: driverStandings[index].position,
-                              constructionColor: Color(int.parse(
-                                  driverStandings[index]
-                                      .colorScheme
-                                      .replaceAll('#', '0xFF'))),
-                              title: driverStandings[index].driverName,
-                              subtitle: driverStandings[index].constructorName,
-                              image: driverStandings[index].driverImage,
-                              points: driverStandings[index].points);
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.pushNamed(
+                                context,
+                                '/driverDetails',
+                                arguments: driverStandings[index],
+                              );
+                            },
+                            child: Standingstable(
+                                position: driverStandings[index].position,
+                                constructionColor: Color(int.parse(
+                                    driverStandings[index]
+                                        .colorScheme
+                                        .replaceAll('#', '0xFF'))),
+                                title: driverStandings[index].driverName,
+                                subtitle:
+                                    driverStandings[index].constructorName,
+                                image: driverStandings[index].driverImage,
+                                points: driverStandings[index].points),
+                          );
                         },
                       );
                     } else if (snapshot.hasError) {
@@ -96,14 +112,13 @@ class StandingTab extends StatelessWidget {
                                             Text(
                                               constructorStandings[index]
                                                   .constructorName,
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 20),
+                                              style:
+                                                  TextAppStyle().titleStyle(),
                                             ),
                                             Text(
                                               '${constructorStandings[index].points.toString()} PTS',
-                                              style: const TextStyle(
-                                                  color: Colors.grey),
+                                              style: TextAppStyle()
+                                                  .subtitleStyle(),
                                             ),
                                           ],
                                         )),
@@ -135,7 +150,7 @@ class Standingstable extends StatelessWidget {
   final int position;
   final Color constructionColor;
   final String title;
-  final String? subtitle;
+  final String subtitle;
   final String image;
   final int points;
   const Standingstable({
@@ -143,7 +158,7 @@ class Standingstable extends StatelessWidget {
     required this.position,
     required this.constructionColor,
     required this.title,
-    this.subtitle,
+    required this.subtitle,
     required this.image,
     required this.points,
   });
@@ -154,14 +169,15 @@ class Standingstable extends StatelessWidget {
       padding: const EdgeInsets.only(top: 8),
       child: Card(
         child: Padding(
-          padding: const EdgeInsets.only(top: 10, left: 10),
+          padding: const EdgeInsets.only(top: 10, left: 20),
           child: Row(
             children: [
               SizedBox(
                 height: 20,
-                width: 25,
+                width: 30,
                 child: Text(position.toString(),
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20)),
               ),
               Container(
                 height: 40,
@@ -177,12 +193,11 @@ class Standingstable extends StatelessWidget {
                   children: [
                     Text(
                       title,
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 20),
+                      style: TextAppStyle().titleStyle(),
                     ),
                     Text(
-                      subtitle ?? '',
-                      style: const TextStyle(color: Colors.grey),
+                      subtitle,
+                      style: TextAppStyle().subtitleStyle(),
                     ),
                   ],
                 ),
@@ -223,6 +238,14 @@ class Standingstable extends StatelessWidget {
                     ),
                   )
                 ],
+              ),
+              const Icon(
+                Icons.arrow_forward_ios,
+                size: 15,
+                color: Colors.red,
+              ),
+              const SizedBox(
+                width: 10,
               )
             ],
           ),

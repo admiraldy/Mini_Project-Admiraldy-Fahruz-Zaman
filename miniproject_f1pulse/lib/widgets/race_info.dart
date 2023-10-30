@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:miniproject_f1pulse/models/race_models.dart';
+import 'package:miniproject_f1pulse/theme/textstyle_theme.dart';
 
 class RaceDetailsInfo extends StatelessWidget {
   const RaceDetailsInfo({super.key});
@@ -67,16 +68,16 @@ class RaceDetailsInfo extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   'Circuit',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextAppStyle().titleStyle2(),
                 ),
-                const SizedBox(height: 10),
+                const SizedBox(height: 20),
                 Image.asset(race.imagePath),
-                const SizedBox(height: 10),
-                const Text(
+                const SizedBox(height: 20),
+                Text(
                   'Race Weekend',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  style: TextAppStyle().titleStyle2(),
                 ),
               ],
             ),
@@ -87,6 +88,11 @@ class RaceDetailsInfo extends StatelessWidget {
           thirdPractice,
           qualifying,
           sprint,
+          RaceWeekendCard(
+              title: 'Race',
+              day: DateFormat('dd').format(race.date),
+              month: DateFormat('MMM').format(race.date),
+              time: DateFormat('HH:mm').format(race.time))
         ],
       ),
     );
@@ -109,15 +115,16 @@ class RaceWeekendCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.all(12),
         child: Row(
           children: [
             Column(
               children: [
                 Text(
                   day,
-                  style: const TextStyle(fontSize: 15),
+                  style: TextAppStyle().titleStyle(),
                 ),
+                const SizedBox(height: 5),
                 Container(
                   width: 60,
                   height: 20,
@@ -128,10 +135,7 @@ class RaceWeekendCard extends StatelessWidget {
                   child: Center(
                     child: Text(
                       month.toUpperCase(),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14),
+                      style: TextAppStyle().monthStyle(),
                     ),
                   ),
                 )
@@ -147,13 +151,10 @@ class RaceWeekendCard extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(title,
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 5),
+                Text(title, style: TextAppStyle().titleStyle()),
                 Text(
                   time,
-                  style: const TextStyle(fontSize: 12),
+                  style: TextAppStyle().subtitleStyle(),
                 )
               ],
             )

@@ -9,9 +9,10 @@ class NewsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final News news = ModalRoute.of(context)!.settings.arguments as News;
+    final NewsModel news =
+        ModalRoute.of(context)!.settings.arguments as NewsModel;
     double screenHeight = MediaQuery.of(context).size.height;
-    String formattedDate = DateFormat('dd MMMM yyyy').format(news.publishedAt!);
+    String formattedDate = DateFormat('dd MMMM yyyy').format(news.publishedAt);
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -22,7 +23,7 @@ class NewsPage extends StatelessWidget {
               child: Stack(
                 children: [
                   Image.network(
-                    news.image!,
+                    news.urlToImage,
                     fit: BoxFit.cover,
                     height: double.infinity,
                   ),
@@ -63,7 +64,7 @@ class NewsPage extends StatelessWidget {
                           child: Column(
                             children: [
                               Text(
-                                news.title!,
+                                news.title,
                                 style: const TextStyle(
                                   color: Colors.white,
                                   fontSize: 24,
@@ -98,7 +99,7 @@ class NewsPage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    news.source!.name!,
+                    news.source,
                     style: const TextStyle(
                         fontSize: 16,
                         color: Colors.black,
@@ -117,7 +118,7 @@ class NewsPage extends StatelessWidget {
                 shrinkWrap: true,
                 children: [
                   Text(
-                    news.content!,
+                    news.content,
                     style: const TextStyle(
                       fontSize: 18,
                       height: 1.5,

@@ -1,85 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+import 'package:miniproject_f1pulse/models/driver_standing_models.dart';
 import 'package:miniproject_f1pulse/models/news_model.dart';
-import 'package:miniproject_f1pulse/models/race_models.dart';
+import 'package:miniproject_f1pulse/pages/past_race_details_page.dart';
 import 'package:miniproject_f1pulse/services/news_api_service.dart';
-import 'package:miniproject_f1pulse/theme/textstyle_theme.dart';
-import 'package:miniproject_f1pulse/widgets/upcoming_card.dart';
+import 'package:miniproject_f1pulse/services/open_ai_service.dart';
 
-class HomeTab extends StatelessWidget {
-  const HomeTab({super.key});
+class DriverDetails extends StatelessWidget {
+  const DriverDetails({super.key});
 
   @override
   Widget build(BuildContext context) {
     final ScrollController newsScrollController = ScrollController();
-    RaceAPI race = RaceAPI();
-
+    final DriverStanding driver =
+        ModalRoute.of(context)!.settings.arguments as DriverStanding;
     return Scaffold(
       appBar: AppBar(
-        toolbarHeight: 80,
         backgroundColor: Colors.red,
-        title: Text(
-          'F1Pulse',
-          style: TextAppStyle().headerStye(),
-        ),
-        centerTitle: true,
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            FutureBuilder(
-                future: race.getRaceData(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<Race> races = snapshot.data as List<Race>;
-                    Race nearestRace = races.firstWhere(
-                        (race) => race.date.isAfter(DateTime.now()),
-                        orElse: () => races.last);
-                    String raceDate =
-                        DateFormat('dd MMMM yyyy').format(nearestRace.date);
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/upcomingRaceDetails',
-                          arguments: nearestRace,
-                        );
-                      },
-                      child: UpcomingRaceCard(
-                        date: raceDate,
-                        raceName: nearestRace.raceName,
-                        circuitName: nearestRace.circuitName,
-                        raceTime: nearestRace.time,
-                        firstPracticeTime:
-                            nearestRace.firstPractice ?? DateTime.now(),
-                        secondPracticeTime:
-                            nearestRace.secondPractice ?? DateTime.now(),
-                        thirdPracticeTime:
-                            nearestRace.thirdPractice ?? DateTime.now(),
-                        qualifyingTime:
-                            nearestRace.qualifying ?? DateTime.now(),
-                        sprintTime: nearestRace.qualifying ?? DateTime.now(),
-                      ),
-                    );
-                  } else if (snapshot.hasError) {
-                    return const Text('Error');
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                }),
-            const SizedBox(height: 10),
-            const Text(
-              'Top Stories',
-              style: TextStyle(),
+        bottom: const TabBar(
+          tabs: [
+            Tab(text: 'Info'),
+            Tab(
+              text: 'Media',
             ),
-            const SizedBox(height: 10),
-            FutureBuilder(
-                future: NewsApiService().fetchNews('formula 1'),
+          ],
+        ),
+      ),
+      body: TabBarView(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: Column(
+              children: [
+                DriverCard(
+                  driverName: driver.driverName,
+                  constructorName: driver.constructorName,
+                  driverImage: driver.driverImage,
+                ),
+                // show the openai output
+                Card(
+                  child: FutureBuilder<String>(
+                    future: fetchDriverDetails(
+                        driver.driverName, driver.constructorName),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else {
+                        return Padding(
+                          padding: const EdgeInsets.all(10),
+                          child: Text(
+                            snapshot.data ?? 'No information available.',
+                            style: const TextStyle(fontSize: 16),
+                          ),
+                        );
+                      }
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+          SingleChildScrollView(
+            child: FutureBuilder(
+                future: NewsApiService().fetchNews(driver.driverName),
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    List<NewsModel> news = snapshot.data as List<NewsModel>;
+                    List<NewsModel> news = (snapshot.data ?? []);
                     return ListView.builder(
                         controller: newsScrollController,
                         shrinkWrap: true,
@@ -127,15 +114,15 @@ class HomeTab extends StatelessWidget {
                           );
                         });
                   } else if (snapshot.hasError) {
-                    return const Text('Error');
+                    return Text('Error: ${snapshot.error}');
                   } else {
                     return const Center(
                       child: CircularProgressIndicator(),
                     );
                   }
                 }),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

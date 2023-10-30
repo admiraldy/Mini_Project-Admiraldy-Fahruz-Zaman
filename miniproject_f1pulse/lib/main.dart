@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniproject_f1pulse/pages/driver_details.dart';
 import 'package:miniproject_f1pulse/pages/main_page.dart';
 import 'package:miniproject_f1pulse/pages/news_page.dart';
 import 'package:miniproject_f1pulse/pages/past_race_details_page.dart';
@@ -20,6 +21,7 @@ class F1PulseApp extends StatelessWidget {
         '/upcomingRaceDetails': (context) => const UpcomingRaceDetails(),
         '/newsDetails': (context) => const NewsPage(),
         '/pastRaceDetails': (context) => const PastRaceDetails(),
+        '/driverDetails': (context) => const DriverDetails(),
       },
       debugShowCheckedModeBanner: false,
     );

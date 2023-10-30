@@ -15,7 +15,7 @@ class UpcomingRaceDetails extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.red,
         leading: IconButton(
             onPressed: () {
               Navigator.pop(context);
@@ -33,6 +33,11 @@ class UpcomingRaceDetails extends StatelessWidget {
               raceName: race.raceName,
               circuitName: race.circuitName,
               raceTime: race.time,
+              firstPracticeTime: race.firstPractice ?? DateTime.now(),
+              secondPracticeTime: race.secondPractice ?? DateTime.now(),
+              thirdPracticeTime: race.thirdPractice ?? DateTime.now(),
+              qualifyingTime: race.qualifying ?? DateTime.now(),
+              sprintTime: race.qualifying ?? DateTime.now(),
             ),
             const SizedBox(height: 10),
             const RaceDetailsInfo()

@@ -1,26 +1,26 @@
 import 'dart:convert';
-
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:miniproject_f1pulse/models/news_model.dart';
 
-class NewsAPI {
-  final endPointUrl =
-      "https://gnews.io/api/v4/search?q=formula one&lang=en&apikey=75c3b8c073180a176270a78317f77304";
+class NewsApiService {
+  static const String _baseUrl = 'https://newsapi.org/v2';
+  static const String _apiKey = '0f80e70653f14c1b840bfd0170dd8d09';
 
-  Future<List<News>> getArticle() async {
-    Response res = await get(Uri.parse(endPointUrl));
+  Future<List<NewsModel>> fetchNews(String query) async {
+    final response = await http.get(Uri.parse(
+        '$_baseUrl/everything?q=$query&language=en&pageSize=20&apiKey=$_apiKey'));
 
-    if (res.statusCode == 200) {
-      Map<String, dynamic> json = jsonDecode(res.body);
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonData = jsonDecode(response.body);
 
-      List<dynamic> body = json['articles'];
-
-      List<News> news =
-          body.map((dynamic item) => News.fromJson(item)).toList();
-
-      return news;
+      if (jsonData.containsKey('articles')) {
+        final List<dynamic> articles = jsonData['articles'];
+        return articles.map((article) => NewsModel.fromJson(article)).toList();
+      } else {
+        throw Exception('Failed to load news');
+      }
     } else {
-      throw ("Can't get the news");
+      throw Exception('Failed to load news');
     }
   }
 }
