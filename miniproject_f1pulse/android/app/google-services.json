@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "690888082680",
+    "project_id": "f1pulse-11512",
+    "storage_bucket": "f1pulse-11512.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:690888082680:android:01ef3f5d24124d7e40270d",
+        "android_client_info": {
+          "package_name": "com.example.miniproject_f1pulse"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBh5bUI2t0eyRTi5drJL5Lxvx8U-9GE6l0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

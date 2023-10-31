@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:miniproject_f1pulse/models/constructor_standing_models.dart';
-import 'package:miniproject_f1pulse/models/driver_standing_models.dart';
+import 'package:get/get.dart';
+import 'package:miniproject_f1pulse/controller/controller.dart';
 import 'package:miniproject_f1pulse/theme/textstyle_theme.dart';
+import 'package:miniproject_f1pulse/widgets/standings.dart';
 
 class StandingTab extends StatelessWidget {
   const StandingTab({Key? key}) : super(key: key);
@@ -26,231 +27,77 @@ class StandingTab extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              // Display driver standing
-              FutureBuilder(
-                  future: fetchDriverStandings(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<DriverStanding> driverStandings =
-                          snapshot.data as List<DriverStanding>;
-                      return ListView.builder(
-                        itemCount: driverStandings.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(
-                                context,
-                                '/driverDetails',
-                                arguments: driverStandings[index],
-                              );
-                            },
-                            child: Standingstable(
-                                position: driverStandings[index].position,
-                                constructionColor: Color(int.parse(
-                                    driverStandings[index]
-                                        .colorScheme
-                                        .replaceAll('#', '0xFF'))),
-                                title: driverStandings[index].driverName,
-                                subtitle:
-                                    driverStandings[index].constructorName,
-                                image: driverStandings[index].driverImage,
-                                points: driverStandings[index].points),
-                          );
-                        },
-                      );
-                    } else if (snapshot.hasError) {
-                      return const Text('Error');
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  }),
+              GetBuilder<DriverStandingController>(
+                init: DriverStandingController(),
+                builder: (controller) {
+                  if (controller.isLoading.value) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (controller.hasError.value) {
+                    return const Text('Error');
+                  } else {
+                    return ListView.builder(
+                      itemCount: controller.driverStandings.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            Get.toNamed(
+                              '/driverDetails',
+                              arguments: controller.driverStandings[index],
+                            );
+                          },
+                          child: DriverStandingsTable(
+                              position:
+                                  controller.driverStandings[index].position,
+                              constructionColor: Color(int.parse(controller
+                                  .driverStandings[index].colorScheme
+                                  .replaceAll('#', '0xFF'))),
+                              title:
+                                  controller.driverStandings[index].driverName,
+                              subtitle: controller
+                                  .driverStandings[index].constructorName,
+                              image:
+                                  controller.driverStandings[index].driverImage,
+                              points: controller.driverStandings[index].points),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
               // Display constructor standing
-              FutureBuilder(
-                  future: fetchConstructorStandings(),
-                  builder: ((context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<ConstructorStanding> constructorStandings =
-                          snapshot.data as List<ConstructorStanding>;
-                      return ListView.builder(
-                        itemCount: constructorStandings.length,
-                        itemBuilder: (context, index) {
-                          return Padding(
-                              padding: const EdgeInsets.only(top: 8),
-                              child: Card(
-                                child: Padding(
-                                    padding: const EdgeInsets.all(10),
-                                    child: Row(
-                                      children: [
-                                        SizedBox(
-                                          height: 20,
-                                          width: 25,
-                                          child: Text(
-                                              constructorStandings[index]
-                                                  .position
-                                                  .toString(),
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold)),
-                                        ),
-                                        Container(
-                                          height: 40,
-                                          width: 5,
-                                          color: Color(int.parse(
-                                              constructorStandings[index]
-                                                  .colorScheme
-                                                  .replaceAll('#', '0xFF'))),
-                                        ),
-                                        const SizedBox(
-                                          width: 10,
-                                        ),
-                                        Expanded(
-                                            child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Text(
-                                              constructorStandings[index]
-                                                  .constructorName,
-                                              style:
-                                                  TextAppStyle().titleStyle(),
-                                            ),
-                                            Text(
-                                              '${constructorStandings[index].points.toString()} PTS',
-                                              style: TextAppStyle()
-                                                  .subtitleStyle(),
-                                            ),
-                                          ],
-                                        )),
-                                        Image.asset(
-                                          constructorStandings[index]
-                                              .constructorImages,
-                                          height: 50,
-                                        )
-                                      ],
-                                    )),
-                              ));
-                        },
-                      );
-                    } else if (snapshot.hasError) {
-                      return const Text('Error');
-                    } else {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    }
-                  }))
+              GetBuilder<ConstructorStandingController>(
+                init: ConstructorStandingController(),
+                builder: (controller) {
+                  if (controller.isLoading.value) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (controller.hasError.value) {
+                    return const Text('Error');
+                  } else {
+                    return ListView.builder(
+                      itemCount: controller.constructorStandings.length,
+                      itemBuilder: (context, index) {
+                        return ConstructorStandingTable(
+                            position:
+                                controller.constructorStandings[index].position,
+                            constructorName: controller
+                                .constructorStandings[index].constructorName,
+                            points:
+                                controller.constructorStandings[index].points,
+                            constructorImages: controller
+                                .constructorStandings[index].constructorImages,
+                            colorScheme: controller
+                                .constructorStandings[index].colorScheme);
+                      },
+                    );
+                  }
+                },
+              ),
             ],
           ),
         ));
-  }
-}
-
-class Standingstable extends StatelessWidget {
-  final int position;
-  final Color constructionColor;
-  final String title;
-  final String subtitle;
-  final String image;
-  final int points;
-  const Standingstable({
-    super.key,
-    required this.position,
-    required this.constructionColor,
-    required this.title,
-    required this.subtitle,
-    required this.image,
-    required this.points,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 8),
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.only(top: 10, left: 20),
-          child: Row(
-            children: [
-              SizedBox(
-                height: 20,
-                width: 30,
-                child: Text(position.toString(),
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 20)),
-              ),
-              Container(
-                height: 40,
-                width: 5,
-                color: constructionColor,
-              ),
-              const SizedBox(
-                width: 10,
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: TextAppStyle().titleStyle(),
-                    ),
-                    Text(
-                      subtitle,
-                      style: TextAppStyle().subtitleStyle(),
-                    ),
-                  ],
-                ),
-              ),
-              Stack(
-                alignment: AlignmentDirectional.bottomCenter,
-                children: [
-                  Image.asset(
-                    image,
-                    height: 110,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      width: 60,
-                      height: 25,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            Text(
-                              points.toString(),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 12),
-                            ),
-                            const Text(
-                              'PTS',
-                              style: TextStyle(fontSize: 12),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-              const Icon(
-                Icons.arrow_forward_ios,
-                size: 15,
-                color: Colors.red,
-              ),
-              const SizedBox(
-                width: 10,
-              )
-            ],
-          ),
-        ),
-      ),
-    );
   }
 }

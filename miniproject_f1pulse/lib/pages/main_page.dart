@@ -21,7 +21,7 @@ class _MainPageState extends State<MainPage> {
   }
 
   final List _pages = [
-    const HomeTab(),
+    HomeTab(),
     const RacingTab(),
     const StandingTab(),
   ];

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:miniproject_f1pulse/models/race_models.dart';
-import 'package:miniproject_f1pulse/widgets/race_info.dart';
+import 'package:miniproject_f1pulse/widgets/races_component/race_info.dart';
 import 'package:miniproject_f1pulse/widgets/upcoming_card.dart';
 
 class UpcomingRaceDetails extends StatelessWidget {
@@ -9,7 +10,7 @@ class UpcomingRaceDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Race race = ModalRoute.of(context)!.settings.arguments as Race;
+    final Race race = Get.arguments as Race;
     String raceDate = DateFormat('dd MMMM yyyy').format(race.date);
 
     return Scaffold(
@@ -18,7 +19,7 @@ class UpcomingRaceDetails extends StatelessWidget {
         backgroundColor: Colors.red,
         leading: IconButton(
             onPressed: () {
-              Navigator.pop(context);
+              Get.back();
             },
             icon: const Icon(
               Icons.arrow_back_ios,

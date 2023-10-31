@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:miniproject_f1pulse/theme/team_color_theme.dart';
 
 class DriverStanding {
@@ -29,21 +27,5 @@ class DriverStanding {
       colorScheme: TeamColor.get(json['Constructors'][0]['name']),
       driverImage: 'assets/images/drivers/${json['Driver']['driverId']}.png',
     );
-  }
-}
-
-Future<List<DriverStanding>> fetchDriverStandings() async {
-  final response = await http
-      .get(Uri.parse('http://ergast.com/api/f1/current/driverStandings.json'));
-
-  if (response.statusCode == 200) {
-    final data = jsonDecode(response.body);
-    final driverStandings = data['MRData']['StandingsTable']['StandingsLists']
-        [0]['DriverStandings'] as List<dynamic>;
-    return driverStandings
-        .map((json) => DriverStanding.fromJson(json))
-        .toList();
-  } else {
-    throw Exception('Failed to fetch driver standings');
   }
 }

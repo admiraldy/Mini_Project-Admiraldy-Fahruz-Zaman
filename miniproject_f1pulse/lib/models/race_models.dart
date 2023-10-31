@@ -1,5 +1,3 @@
-import 'package:http/http.dart' as http;
-import 'dart:convert';
 import 'package:miniproject_f1pulse/models/result_model.dart';
 
 class Race {
@@ -90,50 +88,5 @@ class Race {
     final resultObjects =
         resultsList.map((result) => Result.fromJson(result)).toList();
     results.addAll(resultObjects);
-  }
-}
-
-class RaceAPI {
-  final endPointUrl = "https://ergast.com/api/f1/current.json";
-  final resultsEndPointUrl =
-      "https://ergast.com/api/f1/current/results.json?limit=500";
-
-  Future<List<Race>> getRaceData() async {
-    final response = await http.get(Uri.parse(endPointUrl));
-    final resultsResponse = await http.get(Uri.parse(resultsEndPointUrl));
-
-    if (response.statusCode == 200 && resultsResponse.statusCode == 200) {
-      Map<String, dynamic> data = jsonDecode(response.body);
-      List<dynamic> races = data['MRData']['RaceTable']['Races'];
-
-      Map<String, Map<String, dynamic>> raceResults =
-          fetchRaceResults(resultsResponse);
-
-      List<Race> raceList = races.map((race) {
-        final raceModel = Race.fromJson(race);
-        final resultData = raceResults[raceModel.raceName];
-        if (resultData != null) {
-          raceModel.addResult(resultData);
-        }
-        return raceModel;
-      }).toList();
-
-      return raceList;
-    } else {
-      throw Exception('Failed to fetch data');
-    }
-  }
-
-  Map<String, Map<String, dynamic>> fetchRaceResults(http.Response response) {
-    Map<String, dynamic> resultsData = jsonDecode(response.body);
-    List<dynamic> raceResults = resultsData['MRData']['RaceTable']['Races'];
-
-    Map<String, Map<String, dynamic>> raceResultsMap = {};
-    for (var result in raceResults) {
-      final raceName = result['raceName'];
-      raceResultsMap[raceName] = result;
-    }
-
-    return raceResultsMap;
   }
 }

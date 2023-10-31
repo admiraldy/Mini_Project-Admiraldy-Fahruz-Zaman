@@ -147,62 +147,36 @@ class _UpcomingRaceCardState extends State<UpcomingRaceCard> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            Column(
-                              children: [
-                                Text(
-                                  currentEventIndex < racesTime.length
-                                      ? remainingTime.inDays.toString()
-                                      : '00',
-                                  style: const TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const Text('days'),
-                              ],
+                            ShowTime(
+                              clock: currentEventIndex < racesTime.length
+                                  ? remainingTime.inDays.toString()
+                                  : '00',
+                              desc: 'Days',
                             ),
                             Container(
                               width: 1,
                               height: 40,
                               color: Colors.grey,
                             ),
-                            Column(
-                              children: [
-                                Text(
-                                  currentEventIndex < racesTime.length
-                                      ? (remainingTime.inHours % 24)
-                                          .toString()
-                                          .padLeft(2, '0')
-                                      : '00',
-                                  style: const TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const Text('hours'),
-                              ],
-                            ),
+                            ShowTime(
+                                clock: currentEventIndex < racesTime.length
+                                    ? (remainingTime.inHours % 24)
+                                        .toString()
+                                        .padLeft(2, '0')
+                                    : '00',
+                                desc: 'Hours'),
                             Container(
                               width: 1,
                               height: 40,
                               color: Colors.grey,
                             ),
-                            Column(
-                              children: [
-                                Text(
-                                  currentEventIndex < racesTime.length
-                                      ? (remainingTime.inMinutes % 60)
-                                          .toString()
-                                          .padLeft(2, '0')
-                                      : '00',
-                                  style: const TextStyle(
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                const Text('minutes'),
-                              ],
-                            )
+                            ShowTime(
+                                clock: currentEventIndex < racesTime.length
+                                    ? (remainingTime.inMinutes % 60)
+                                        .toString()
+                                        .padLeft(2, '0')
+                                    : '00',
+                                desc: 'Minutes')
                           ],
                         )
                       ],
@@ -213,6 +187,32 @@ class _UpcomingRaceCardState extends State<UpcomingRaceCard> {
             ),
           ),
         )
+      ],
+    );
+  }
+}
+
+class ShowTime extends StatelessWidget {
+  final String clock;
+  final String desc;
+  const ShowTime({
+    super.key,
+    required this.clock,
+    required this.desc,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(
+          clock,
+          style: const TextStyle(
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        Text(desc),
       ],
     );
   }

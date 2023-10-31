@@ -1,18 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:miniproject_f1pulse/controller/controller.dart';
 import 'package:miniproject_f1pulse/models/news_model.dart';
 import 'package:miniproject_f1pulse/models/race_models.dart';
-import 'package:miniproject_f1pulse/services/news_api_service.dart';
 import 'package:miniproject_f1pulse/theme/textstyle_theme.dart';
+import 'package:miniproject_f1pulse/widgets/news_card.dart';
 import 'package:miniproject_f1pulse/widgets/upcoming_card.dart';
 
 class HomeTab extends StatelessWidget {
-  const HomeTab({super.key});
+  final HomeController controller = Get.find<HomeController>();
+  HomeTab({super.key});
+
+  void userSignOut() async {
+    await FirebaseAuth.instance.signOut();
+  }
 
   @override
   Widget build(BuildContext context) {
     final ScrollController newsScrollController = ScrollController();
-    RaceAPI race = RaceAPI();
 
     return Scaffold(
       appBar: AppBar(
@@ -23,117 +30,70 @@ class HomeTab extends StatelessWidget {
           style: TextAppStyle().headerStye(),
         ),
         centerTitle: true,
+        actions: [
+          IconButton(onPressed: userSignOut, icon: const Icon(Icons.logout))
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
-            FutureBuilder(
-                future: race.getRaceData(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<Race> races = snapshot.data as List<Race>;
-                    Race nearestRace = races.firstWhere(
-                        (race) => race.date.isAfter(DateTime.now()),
-                        orElse: () => races.last);
-                    String raceDate =
-                        DateFormat('dd MMMM yyyy').format(nearestRace.date);
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(
-                          context,
-                          '/upcomingRaceDetails',
-                          arguments: nearestRace,
-                        );
-                      },
-                      child: UpcomingRaceCard(
-                        date: raceDate,
-                        raceName: nearestRace.raceName,
-                        circuitName: nearestRace.circuitName,
-                        raceTime: nearestRace.time,
-                        firstPracticeTime:
-                            nearestRace.firstPractice ?? DateTime.now(),
-                        secondPracticeTime:
-                            nearestRace.secondPractice ?? DateTime.now(),
-                        thirdPracticeTime:
-                            nearestRace.thirdPractice ?? DateTime.now(),
-                        qualifyingTime:
-                            nearestRace.qualifying ?? DateTime.now(),
-                        sprintTime: nearestRace.qualifying ?? DateTime.now(),
-                      ),
-                    );
-                  } else if (snapshot.hasError) {
-                    return const Text('Error');
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                }),
+            Obx(() {
+              if (controller.raceData.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                Race nearestRace = controller.raceData.firstWhere(
+                    (race) => race.date.isAfter(DateTime.now()),
+                    orElse: () => controller.raceData.last);
+                String raceDate =
+                    DateFormat('dd MMMM yyyy').format(nearestRace.date);
+                return GestureDetector(
+                  onTap: () {
+                    Get.toNamed('/upcomingRaceDetails', arguments: nearestRace);
+                  },
+                  child: UpcomingRaceCard(
+                    date: raceDate,
+                    raceName: nearestRace.raceName,
+                    circuitName: nearestRace.circuitName,
+                    raceTime: nearestRace.time,
+                    firstPracticeTime:
+                        nearestRace.firstPractice ?? DateTime.now(),
+                    secondPracticeTime:
+                        nearestRace.secondPractice ?? DateTime.now(),
+                    thirdPracticeTime:
+                        nearestRace.thirdPractice ?? DateTime.now(),
+                    qualifyingTime: nearestRace.qualifying ?? DateTime.now(),
+                    sprintTime: nearestRace.qualifying ?? DateTime.now(),
+                  ),
+                );
+              }
+            }),
             const SizedBox(height: 10),
             const Text(
               'Top Stories',
               style: TextStyle(),
             ),
             const SizedBox(height: 10),
-            FutureBuilder(
-                future: NewsApiService().fetchNews('formula 1'),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<NewsModel> news = snapshot.data as List<NewsModel>;
-                    return ListView.builder(
-                        controller: newsScrollController,
-                        shrinkWrap: true,
-                        itemCount: news.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.pushNamed(context, '/newsDetails',
-                                  arguments: news[index]);
-                            },
-                            child: Padding(
-                              padding: const EdgeInsets.only(
-                                  bottom: 10, left: 8, right: 8),
-                              child: Card(
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(10)),
-                                  color: Colors.white,
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      ClipRRect(
-                                          borderRadius:
-                                              const BorderRadius.vertical(
-                                                  top: Radius.circular(10)),
-                                          child: Image.network(
-                                              news[index].urlToImage)),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            top: 15,
-                                            left: 8,
-                                            right: 8,
-                                            bottom: 20),
-                                        child: Text(
-                                          news[index].title,
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 14,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  )),
-                            ),
-                          );
-                        });
-                  } else if (snapshot.hasError) {
-                    return const Text('Error');
-                  } else {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  }
-                }),
+            Obx(() {
+              if (controller.newsData.isEmpty) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                List<NewsModel> news = controller.newsData;
+                return ListView.builder(
+                    controller: newsScrollController,
+                    shrinkWrap: true,
+                    itemCount: news.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Get.toNamed('/newsDetails', arguments: news[index]);
+                        },
+                        child: NewsCard(
+                            image: news[index].urlToImage,
+                            title: news[index].title),
+                      );
+                    });
+              }
+            }),
           ],
         ),
       ),
