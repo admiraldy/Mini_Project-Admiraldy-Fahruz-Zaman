@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:miniproject_f1pulse/controller/controller.dart';
 import 'package:miniproject_f1pulse/pages/authpage/auth_page.dart';
-import 'package:miniproject_f1pulse/pages/authpage/login_signup_page.dart';
 import 'package:miniproject_f1pulse/pages/driver_details.dart';
 import 'package:miniproject_f1pulse/pages/main_page.dart';
 import 'package:miniproject_f1pulse/pages/news_page.dart';
